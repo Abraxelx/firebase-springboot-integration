@@ -4,6 +4,7 @@ import com.risaleinurdanvecizeler.quotesservice.model.Quotes;
 import com.risaleinurdanvecizeler.quotesservice.service.QuoteService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -17,7 +18,7 @@ public class QuotesController {
     }
 
     @RequestMapping("/getQuotes")
-    public Quotes getAlllQuotes() throws ExecutionException, InterruptedException {
+    public List<Quotes> getAlllQuotes() throws ExecutionException, InterruptedException {
         return firebaseService.getAllQuotes();
     }
 
