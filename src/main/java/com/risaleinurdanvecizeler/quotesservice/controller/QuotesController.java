@@ -16,6 +16,11 @@ public class QuotesController {
         this.firebaseService = firebaseService;
     }
 
+    @RequestMapping("/getQuotes")
+    public Quotes getAlllQuotes() throws ExecutionException, InterruptedException {
+        return firebaseService.getAllQuotes();
+    }
+
     @RequestMapping("/fetchQuote")
     public Quotes getQuoteDetails(@RequestHeader() String text) throws ExecutionException, InterruptedException {
         return firebaseService.fetchQuoteDetails(text);
@@ -35,4 +40,5 @@ public class QuotesController {
     public String deleteUser(@RequestHeader String text) throws ExecutionException, InterruptedException {
         return firebaseService.deleteQuote(text);
     }
+
 }

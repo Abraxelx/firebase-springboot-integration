@@ -15,17 +15,28 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class QuoteService {
     private DocumentReference documentReference;
+    ApiFuture<DocumentSnapshot> future;
 
-    public String createNewQuote(Quotes quote) throws ExecutionException, InterruptedException {
-        Firestore dbFireStore = FirestoreClient.getFirestore();
-        ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection("quotes").document().set(quote);
-        return collectionsApiFuture.get().getUpdateTime().toString();
+
+    public Quotes getAllQuotes() throws ExecutionException, InterruptedException {
+        Firestore dbFirestore = FirestoreClient.getFirestore();
+        documentReference = dbFirestore.collection("quotes").document();
+        future = documentReference.get();
+        DocumentSnapshot documentSnapshot = future.get();
+        Quotes quote = null;
+        if (documentSnapshot.exists()) {
+            quote = documentSnapshot.toObject(Quotes.class);
+            return quote;
+        } else {
+            return null;
+        }
+
     }
 
     public Quotes fetchQuoteDetails(String text) throws ExecutionException, InterruptedException {
         Firestore dbFireStore = FirestoreClient.getFirestore();
         documentReference = dbFireStore.collection("quotes").document(text);
-        ApiFuture<DocumentSnapshot> future = documentReference.get();
+        future = documentReference.get();
         DocumentSnapshot documentSnapshot = future.get();
         Quotes quote = null;
 
@@ -36,6 +47,13 @@ public class QuoteService {
             return null;
         }
     }
+
+    public String createNewQuote(Quotes quote) throws ExecutionException, InterruptedException {
+        Firestore dbFireStore = FirestoreClient.getFirestore();
+        ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection("quotes").document().set(quote);
+        return collectionsApiFuture.get().getUpdateTime().toString();
+    }
+
     public String updateQuote(Quotes quote) throws ExecutionException, InterruptedException {
         Firestore dbFireStore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection("quotes").document().set(quote);
