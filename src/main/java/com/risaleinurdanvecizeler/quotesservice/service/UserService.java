@@ -19,7 +19,13 @@ public class UserService {
     public String createNewUser(Person person) throws ExecutionException, InterruptedException {
         Firestore dbFireStore = FirestoreClient.getFirestore();
         ApiFuture<WriteResult> collectionsApiFuture = dbFireStore.collection("users").document().set(person);
-        return collectionsApiFuture.get().getUpdateTime().toString();
+       if(collectionsApiFuture.isDone()){
+            return "Kullanıcı Başarıyla Eklendi. " +collectionsApiFuture.get().getUpdateTime().toString();
+        }else if (collectionsApiFuture.isCancelled()) {
+           return "Kullanıcı Ekleme İşlemi Başarısız Oldu.";
+       }
+       return "İşlem Başarısız.";
+
     }
 
     public Person fetchUserDetails(String username) throws ExecutionException, InterruptedException {
